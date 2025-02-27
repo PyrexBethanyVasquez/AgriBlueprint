@@ -243,4 +243,47 @@
   }
   window.addEventListener("load", navmenuScrollspy);
   document.addEventListener("scroll", navmenuScrollspy);
+
+  /**
+   * Handle form submission
+   */
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".php-email-form");
+    const loading = document.querySelector(".loading");
+    const errorMessage = document.querySelector(".error-message");
+    const sentMessage = document.querySelector(".sent-message");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent the default form submission behavior
+
+      loading.style.display = "block"; // Show loading indicator
+      errorMessage.style.display = "none"; // Hide any previous error messages
+      sentMessage.style.display = "none"; // Hide sent message
+
+      // Prepare the form data to send
+      const formData = new FormData(form);
+
+      // Use fetch to send the form data
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((response) => {
+          loading.style.display = "none"; // Hide loading indicator
+          if (response.ok) {
+            sentMessage.style.display = "block"; // Show success message
+            form.reset(); // Reset the form
+          } else {
+            throw new Error("Error submitting the form");
+          }
+        })
+        .catch(() => {
+          loading.style.display = "none"; // Hide loading indicator
+          // Do not show error message
+        });
+    });
+  });
 })();
